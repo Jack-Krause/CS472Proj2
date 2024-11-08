@@ -23,7 +23,6 @@ public class CheckersData {
             BLACK = 3,
             BLACK_KING = 4;
 
-
     int[][] board;  // board[r][c] is the contents of row r, column c.
 
 
@@ -78,6 +77,35 @@ public class CheckersData {
         // TODO
     	// 
     	// Set up the board with pieces BLACK, RED, and EMPTY
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 8; c++) {
+                if ((r % 2) == (c % 2)) {
+                    this.board[r][c] = BLACK;
+                }
+            }
+        }
+
+        for (int r = 5; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                if ((r % 2) == (c % 2)) {
+                    this.board[r][c] = RED;
+                }
+            }
+        }
+        System.out.println("BOARD");
+        this.printBoard();
+        System.out.println();
+    }
+
+    void printBoard() {
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                int current = this.board[r][c];
+
+                System.out.print(current + " ");
+            }
+            System.out.println();
+        }
     }
 
 
@@ -137,9 +165,30 @@ public class CheckersData {
      * @param player color of the player, RED or BLACK
      */
     CheckersMove[] getLegalMoves(int player) {
-        // TODO
-        return null;
+        ArrayList<CheckersMove> moves = new ArrayList<>();
+        boolean jumpExists = false;
+
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+
+                if (this.board[r][c] == player) {
+                   CheckersMove[] jumps = getLegalJumpsFrom(player, r, c);
+
+                   if (jumps.length > 0) {
+                       jumpExists = true;
+                       moves.addAll(Arrays.asList(jumps));
+                   } else if (! jumpExists) {
+                       CheckersMove[] normals = getNormalMovesFrom(player, r, c);
+                       moves.addAll(Arrays.asList(normals));
+                   }
+                }
+            }
+        }
+
+        if (moves.isEmpty()) return null;
+        return moves.toArray(new CheckersMove[moves.size()]);
     }
+
 
 
     /**
@@ -157,7 +206,43 @@ public class CheckersData {
      * @param col    col index of the start square.
      */
     CheckersMove[] getLegalJumpsFrom(int player, int row, int col) {
-        // TODO 
+        if (player == EMPTY) return null;
+
+        ArrayList<CheckersMove> jumps = new ArrayList<>();
+        int opponent = (player == RED) ? BLACK : RED;
+        int opponentKing = (player == RED) ? BLACK_KING : RED_KING;
+        int[][] directions;
+
+        if (player == BLACK_KING || player == RED_KING) {
+            directions = new int[][] { {-2, -2}, {-2, 2}, {2, -2}, {2, 2} };
+        } else if (player == RED) {
+            directions = new int[][] { {-2, -2}, {-2, 2} };
+        } else {
+            directions = new int[][] { {2, -2}, {2, 2} };
+        }
+
+        for (int[] dir : directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            int jumpRow = row + dir[0] / 2;
+            int jumpCol = col + dir[1] / 2;
+
+            if (newRow < 8
+                    && newCol < 8
+                    && (pieceAt(jumpRow, jumpCol) == opponent) ||pieceAt(jumpRow, jumpCol) == opponentKing
+            ) {
+                jumps.add(new CheckersMove(row, col, newRow, newCol));
+            }
+        }
+
+
+        if (jumps.size() == 0) return null;
+        return jumps.toArray(new CheckersMove[jumps.size()]);
+    }
+
+    CheckersMove[] getNormalMovesFrom(int player, int row, int col) {
+        // TODO
+
         return null;
     }
 

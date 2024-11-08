@@ -37,25 +37,31 @@ public class Checkers extends JPanel {
 	static int aiKey = 0;
 	//To demonstrate previous board
     static boolean chengeValue = false;
-    
-	public static void main(String[] args) {
-		System.out.println("A Checker-Playing Agent Using the Monte Carlo Tree Search");
-		// 1: Use Monte Carlo tree search throughout the game. 
-		System.out.println("keys: 1 (MCTS)  2 (Other - not implemented yet)\n");
-        JFrame window = new JFrame("Checkers");
-        
-        
-        Checkers content = new Checkers();
-        window.setContentPane(content);
-        
-        window.pack();
-        Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-        window.setLocation( (screensize.width - window.getWidth())/2,
-                (screensize.height - window.getHeight())/2 );
-        window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        window.setResizable(false);
-        window.setVisible(true);
+
+    public static void main(String[] args) {
+        CheckersData d = new CheckersData();
+
     }
+
+//	public static void main(String[] args) {
+//		System.out.println("A Checker-Playing Agent Using the Monte Carlo Tree Search");
+//		// 1: Use Monte Carlo tree search throughout the game.
+//		System.out.println("keys: 1 (MCTS)  2 (Other - not implemented yet)\n");
+//        JFrame window = new JFrame("Checkers");
+//
+//
+//        Checkers content = new Checkers();
+//        window.setContentPane(content);
+//
+//        window.pack();
+//        Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+//        window.setLocation( (screensize.width - window.getWidth())/2,
+//                (screensize.height - window.getHeight())/2 );
+//        window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+//        window.setResizable(false);
+//        window.setVisible(true);
+//    } // END MAIN
+
 
     private JButton newGameButton;  // Button for starting a new game.
     private JButton resignButton;   // Button that a player can use to end
@@ -63,7 +69,7 @@ public class Checkers extends JPanel {
 
     private JLabel message;  // Label for displaying messages to the user.
     private static JLabel premessage;
-    
+
     //Previous display
     static PreBoard previous = new PreBoard(); // Display previous board
     /**
@@ -89,7 +95,7 @@ public class Checkers extends JPanel {
          */
         add(board);
         add(previous);
-        
+
         add(newGameButton);
         add(resignButton);
         add(message);
@@ -101,15 +107,15 @@ public class Checkers extends JPanel {
         //board.setBounds(20,20,164,164); // Note:  size MUST be 164-by-164 !
         previous.setBounds(20,20,164,164);
         board.setBounds(230,20,164,164);
-        
+
         //previous.setBounds(20,20,164,164);
         newGameButton.setBounds(400, 60, 120, 30);
         resignButton.setBounds(400, 120, 120, 30);
         message.setBounds(140, 200, 350, 30);
         premessage.setBounds(40, 200, 350, 30);
 
-        
-        
+
+
     } // end constructor
  
     /**

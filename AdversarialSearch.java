@@ -2,7 +2,7 @@ package edu.iastate.cs472.proj2;
 
 /**
  * 
- * @author
+ * @author Jack Krause
  *
  */
 
@@ -25,6 +25,8 @@ public abstract class AdversarialSearch {
      */
     protected CheckersMove[] legalMoves() {
     	// TODO
+
+
     	return null; 
     }
 	
