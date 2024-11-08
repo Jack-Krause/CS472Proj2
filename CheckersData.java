@@ -16,16 +16,16 @@ public class CheckersData {
       on the board.  The constants RED and BLACK also represent players
       in the game. */
 
+    public static final String ANSI_RESET = "\u001B[0m";
+    public static final String ANSI_RED = "\u001B[31m";
+    public static final String ANSI_YELLOW = "\u001B[33m";
     static final int
             EMPTY = 0,
             RED = 1,
             RED_KING = 2,
             BLACK = 3,
             BLACK_KING = 4;
-
     int[][] board;  // board[r][c] is the contents of row r, column c.
-
-
     /**
      * Constructor.  Create the board and set it up for a new game.
      */
@@ -33,10 +33,6 @@ public class CheckersData {
         board = new int[8][8];
         setUpGame();
     }
-
-    public static final String ANSI_RESET = "\u001B[0m";
-    public static final String ANSI_RED = "\u001B[31m";
-    public static final String ANSI_YELLOW = "\u001B[33m";
 
     @Override
     public String toString() {
@@ -75,8 +71,8 @@ public class CheckersData {
      */
     void setUpGame() {
         // TODO
-    	// 
-    	// Set up the board with pieces BLACK, RED, and EMPTY
+        //
+        // Set up the board with pieces BLACK, RED, and EMPTY
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 8; c++) {
                 if ((r % 2) == (c % 2)) {
@@ -92,27 +88,17 @@ public class CheckersData {
                 }
             }
         }
-        System.out.println("BOARD");
-        this.printBoard();
-        System.out.println();
     }
 
-    void printBoard() {
-        for (int r = 0; r < 8; r++) {
-            for (int c = 0; c < 8; c++) {
-                int current = this.board[r][c];
-
-                System.out.print(current + " ");
-            }
-            System.out.println();
-        }
-    }
 
 
     /**
      * Return the contents of the square in the specified row and column.
      */
     int pieceAt(int row, int col) {
+        if (row >= 8 || row < 0 || col >= 8 || col < 0) {
+            return -1;
+        }
         return board[row][col];
     }
 
@@ -120,15 +106,14 @@ public class CheckersData {
     /**
      * Make the specified move.  It is assumed that move
      * is non-null and that the move it represents is legal.
-     *
+     * <p>
      * Make a single move or a sequence of jumps
      * recorded in rows and cols.
-     *
      */
     void makeMove(CheckersMove move) {
         int l = move.rows.size();
-        for(int i = 0; i < l-1; i++)
-            makeMove(move.rows.get(i), move.cols.get(i), move.rows.get(i+1), move.cols.get(i+1));
+        for (int i = 0; i < l - 1; i++)
+            makeMove(move.rows.get(i), move.cols.get(i), move.rows.get(i + 1), move.cols.get(i + 1));
     }
 
 
@@ -146,8 +131,8 @@ public class CheckersData {
      */
     void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
         // TODO
-    	// 
-    	// Update the board for the given move. You need to take care of the following situations:
+        //
+        // Update the board for the given move. You need to take care of the following situations:
         // 1. move the piece from (fromRow,fromCol) to (toRow,toCol)
         // 2. if this move is a jump, remove the captured piece
         // 3. if the piece moves into the kings row on the opponent's side of the board, crowned it as a king
@@ -172,15 +157,19 @@ public class CheckersData {
             for (int c = 0; c < 8; c++) {
 
                 if (this.board[r][c] == player) {
-                   CheckersMove[] jumps = getLegalJumpsFrom(player, r, c);
+                    CheckersMove[] jumps = getLegalJumpsFrom(player, r, c);
 
-                   if (jumps.length > 0) {
-                       jumpExists = true;
-                       moves.addAll(Arrays.asList(jumps));
-                   } else if (! jumpExists) {
-                       CheckersMove[] normals = getNormalMovesFrom(player, r, c);
-                       moves.addAll(Arrays.asList(normals));
-                   }
+                    if (jumps != null && jumps.length > 0) {
+                        jumpExists = true;
+                        moves.addAll(Arrays.asList(jumps));
+                    } else if (!jumpExists) {
+                        CheckersMove[] normals = getNormalMovesFrom(player, r, c);
+                        try {
+                            moves.addAll(Arrays.asList(normals));
+                        } catch (NullPointerException e) {
+                            System.out.println("no moves to add. continue");
+                        }
+                    }
                 }
             }
         }
@@ -190,15 +179,14 @@ public class CheckersData {
     }
 
 
-
     /**
      * Return a list of the legal jumps that the specified player can
      * make starting from the specified row and column.  If no such
      * jumps are possible, null is returned.  The logic is similar
      * to the logic of the getLegalMoves() method.
-     *
-     * Note that each CheckerMove may contain multiple jumps. 
-     * Each move returned in the array represents a sequence of jumps 
+     * <p>
+     * Note that each CheckerMove may contain multiple jumps.
+     * Each move returned in the array represents a sequence of jumps
      * until no further jump is allowed.
      *
      * @param player The player of the current jump, either RED or BLACK.
@@ -206,7 +194,7 @@ public class CheckersData {
      * @param col    col index of the start square.
      */
     CheckersMove[] getLegalJumpsFrom(int player, int row, int col) {
-        if (player == EMPTY) return null;
+        if (player == EMPTY || pieceAt(row, col) != player) return null;
 
         ArrayList<CheckersMove> jumps = new ArrayList<>();
         int opponent = (player == RED) ? BLACK : RED;
@@ -214,11 +202,11 @@ public class CheckersData {
         int[][] directions;
 
         if (player == BLACK_KING || player == RED_KING) {
-            directions = new int[][] { {-2, -2}, {-2, 2}, {2, -2}, {2, 2} };
+            directions = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {2, 2}};
         } else if (player == RED) {
-            directions = new int[][] { {-2, -2}, {-2, 2} };
+            directions = new int[][]{{-2, -2}, {-2, 2}};
         } else {
-            directions = new int[][] { {2, -2}, {2, 2} };
+            directions = new int[][]{{2, -2}, {2, 2}};
         }
 
         for (int[] dir : directions) {
@@ -227,10 +215,7 @@ public class CheckersData {
             int jumpRow = row + dir[0] / 2;
             int jumpCol = col + dir[1] / 2;
 
-            if (newRow < 8
-                    && newCol < 8
-                    && (pieceAt(jumpRow, jumpCol) == opponent) ||pieceAt(jumpRow, jumpCol) == opponentKing
-            ) {
+            if ((pieceAt(jumpRow, jumpCol) == opponent) || (pieceAt(jumpRow, jumpCol) == opponentKing)) {
                 jumps.add(new CheckersMove(row, col, newRow, newCol));
             }
         }
@@ -241,9 +226,32 @@ public class CheckersData {
     }
 
     CheckersMove[] getNormalMovesFrom(int player, int row, int col) {
-        // TODO
+        if (player == EMPTY || pieceAt(row, col) != player) return null;
 
-        return null;
+        ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
+        int opponent = (player == RED) ? BLACK : RED;
+        int opponentKing = (player == RED) ? BLACK_KING : RED_KING;
+        int[][] directions;
+
+        if (player == BLACK_KING || player == RED_KING) {
+            directions = new int[][] { {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
+        } else if (player == RED) {
+            directions = new int[][] { {-1, -1}, {-1, 1} };
+        } else {
+            directions = new int[][] { {1, -1}, {1, 1} };
+        }
+
+        for (int[] dir : directions) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+
+            if ((pieceAt(newRow, newCol) == opponent) || (pieceAt(newRow, newCol) == EMPTY)) {
+                moves.add(new CheckersMove(row, col, newRow, newCol));
+            }
+        }
+
+        if (moves.size() == 0) return null;
+        return moves.toArray(new CheckersMove[moves.size()]);
     }
 
 }

@@ -5,13 +5,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 import javax.swing.*;
-
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 //Scanner for the external input.
 import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
 import java.util.Random;
+
+import static edu.iastate.cs472.proj2.CheckersData.RED;
 
 /**
  * This panel lets two users play checkers against each other.
@@ -40,6 +41,15 @@ public class Checkers extends JPanel {
 
     public static void main(String[] args) {
         CheckersData d = new CheckersData();
+
+        System.out.println(d.toString());
+
+        try {
+            CheckersMove[] possibleMoves = d.getLegalMoves(RED);
+            System.out.println(possibleMoves.length);
+        } catch (NullPointerException e) {
+            System.out.println("getLegalMoves(RED) returned null");
+        }
 
     }
 
@@ -179,7 +189,7 @@ public class Checkers extends JPanel {
                         g.setColor(Color.GRAY);
                     g.fillRect(2 + col*20, 2 + row*20, 20, 20);
                     switch (preBoard.pieceAt(row,col)) {
-                        case CheckersData.RED:
+                        case RED:
                             g.setColor(Color.RED);
                             g.fillOval(4 + col*20, 4 + row*20, 15, 15);
                             break;
@@ -308,9 +318,9 @@ public class Checkers extends JPanel {
             displayBoard.setUpGame(); // S_R, Set up the pieces.
             agentBoard.setUpGame(); // S_L
             //
-            currentPlayer = CheckersData.RED;   // RED moves first.
+            currentPlayer = RED;   // RED moves first.
             player.setCheckersData(board);
-            legalMoves = board.getLegalMoves(CheckersData.RED);  // Get RED's legal moves.
+            legalMoves = board.getLegalMoves(RED);  // Get RED's legal moves.
             selectedRow = -1;   // RED has not yet selected a piece to move.
             message.setText("Red:  Make your move.");
             gameInProgress = true;
@@ -332,7 +342,7 @@ public class Checkers extends JPanel {
                 message.setText("There is no game in progress!");
                 return;
             }
-            if (currentPlayer == CheckersData.RED)
+            if (currentPlayer == RED)
                 gameOver("RED resigns.  BLACK wins.");
             else
                 gameOver("BLACK resigns.  RED wins.");
@@ -371,7 +381,7 @@ public class Checkers extends JPanel {
                 if (legalMove.rows.get(0) == row && legalMove.cols.get(0) == col) {
                     selectedRow = row;
                     selectedCol = col;
-                    if (currentPlayer == CheckersData.RED)
+                    if (currentPlayer == RED)
                         message.setText("RED:  Make your move.");
                     else
                         message.setText("BLACK:  Make your move.");
@@ -420,7 +430,7 @@ public class Checkers extends JPanel {
                 Get that player's legal moves.  If the player has no legal moves,
                 then the game ends. */
             //Play checkers game on agentboard
-            if (currentPlayer == CheckersData.RED) {
+            if (currentPlayer == RED) {
                 currentPlayer = CheckersData.BLACK;
                 legalMoves = board.getLegalMoves(currentPlayer);
                 if (legalMoves == null) {
@@ -450,7 +460,7 @@ public class Checkers extends JPanel {
             
             previous.drawBoard(agentBoard, moveAI);
 
-            currentPlayer = CheckersData.RED;
+            currentPlayer = RED;
             legalMoves = board.getLegalMoves(currentPlayer);
             if (legalMoves == null)
                 gameOver("RED has no moves.  BLACK wins.");
@@ -505,7 +515,7 @@ public class Checkers extends JPanel {
                         g.setColor(Color.GRAY);
                     g.fillRect(2 + col*20, 2 + row*20, 20, 20);
                     switch (displayBoard.pieceAt(row,col)) {
-                        case CheckersData.RED:
+                        case RED:
                             g.setColor(Color.RED);
                             g.fillOval(4 + col*20, 4 + row*20, 15, 15);
                             break;
