@@ -57,7 +57,8 @@ public class CheckersData {
             }
             sb.append(System.lineSeparator());
         }
-        sb.append("  a b c d e f g h");
+        //sb.append("  a b c d e f g h");
+        sb.append("  1 2 3 4 5 6 7 8");
 
         return sb.toString();
     }
@@ -144,6 +145,12 @@ public class CheckersData {
             this.board[removeRow][removeCol] = EMPTY;
         }
         // 3. if the piece moves into the kings row on the opponent's side of the board, crowned it as a king
+
+        if (toRow == 0 && this.board[toRow][toCol] == RED) {
+            this.board[toRow][toCol] = RED_KING;
+        } else if (toRow == 7 && this.board[toRow][toCol] == BLACK) {
+            this.board[toRow][toCol] = BLACK_KING;
+        }
     }
 
     /**
@@ -165,7 +172,7 @@ public class CheckersData {
             for (int c = 0; c < 8; c++) {
 
                 if (this.board[r][c] == player) {
-                    CheckersMove[] jumps = getLegalJumpsFrom(player, r, c);
+                    CheckersMove[] jumps = getJumpsFrom(player, r, c);
 
                     if (jumps != null && jumps.length > 0) {
                         jumpExists = true;
@@ -177,7 +184,7 @@ public class CheckersData {
                         try {
                             moves.addAll(Arrays.asList(normals));
                         } catch (NullPointerException e) {
-                            System.out.println("no moves to add. continue");
+                            //System.out.println("no moves to add. continue");
                         }
                     }
                 }
@@ -203,7 +210,7 @@ public class CheckersData {
      * @param row    row index of the start square.
      * @param col    col index of the start square.
      */
-    CheckersMove[] getLegalJumpsFrom(int player, int row, int col) {
+    CheckersMove[] getJumpsFrom(int player, int row, int col) {
         if (player == EMPTY || pieceAt(row, col) != player) return null;
 
         ArrayList<CheckersMove> jumps = new ArrayList<>();
@@ -225,11 +232,12 @@ public class CheckersData {
             int jumpRow = row + dir[0] / 2;
             int jumpCol = col + dir[1] / 2;
 
+            if (newRow >= 8 || newCol >= 8 || newRow < 0 || newCol < 0) continue;
+
             if ((pieceAt(jumpRow, jumpCol) == opponent) || (pieceAt(jumpRow, jumpCol) == opponentKing)) {
                 jumps.add(new CheckersMove(row, col, newRow, newCol));
             }
         }
-
 
         if (jumps.size() == 0) return null;
         return jumps.toArray(new CheckersMove[jumps.size()]);
@@ -265,7 +273,7 @@ public class CheckersData {
     }
 
     boolean isJump(int fromRow, int fromCol, int toRow, int toCol) {
-        if ()
+        return Math.abs(fromRow - toRow) == 2 && Math.abs(fromCol - toCol) == 2;
     }
 
 }

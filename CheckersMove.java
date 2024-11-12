@@ -32,7 +32,21 @@ public class CheckersMove {
         // move's destination
         rows.add(r2);
         cols.add(c2);
-        isJump = false;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append("(");
+        s.append(this.rows.get(0));
+        s.append(", ");
+        s.append(this.cols.get(0));
+        s.append(") -> (");
+        s.append(this.rows.get(1));
+        s.append(", ");
+        s.append(this.cols.get(1));
+        s.append(")");
+        return s.toString();
     }
     
     CheckersMove() {

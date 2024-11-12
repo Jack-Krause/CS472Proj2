@@ -47,6 +47,14 @@ public class Checkers extends JPanel {
         try {
             CheckersMove[] possibleMoves = d.getLegalMoves(RED);
             System.out.println(possibleMoves.length);
+
+            while (possibleMoves.length > 0) {
+                possibleMoves = d.getLegalMoves(RED);
+                d.makeMove(possibleMoves[0]);
+                System.out.println(possibleMoves[0].toString());
+                System.out.println(d.toString());
+
+            }
         } catch (NullPointerException e) {
             System.out.println("getLegalMoves(RED) returned null");
         }
