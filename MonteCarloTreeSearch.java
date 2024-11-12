@@ -61,4 +61,20 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         return null;
     }
 
+    MCNode<CheckersData> playout(MCNode<CheckersData> tree) {
+        MCNode<CheckersData> current = tree;
+        while (current.state.getLegalMoves(1).length > 0) {
+            CheckersMove move = select(current);
+            MCNode<CheckersData> node =
+        }
+
+        return null;
+    }
+
+    CheckersMove select(MCNode<CheckersData> node) {
+        return null;
+    }
+
+    MCNode<CheckersData> s
+
 }
