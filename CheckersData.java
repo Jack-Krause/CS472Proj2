@@ -70,8 +70,6 @@ public class CheckersData {
      * and all such squares in the last three rows contain red squares.
      */
     void setUpGame() {
-        // TODO
-        //
         // Set up the board with pieces BLACK, RED, and EMPTY
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 8; c++) {
@@ -112,6 +110,7 @@ public class CheckersData {
      */
     void makeMove(CheckersMove move) {
         int l = move.rows.size();
+
         for (int i = 0; i < l - 1; i++)
             makeMove(move.rows.get(i), move.cols.get(i), move.rows.get(i + 1), move.cols.get(i + 1));
     }
@@ -134,7 +133,16 @@ public class CheckersData {
         //
         // Update the board for the given move. You need to take care of the following situations:
         // 1. move the piece from (fromRow,fromCol) to (toRow,toCol)
+        this.board[toRow][toCol] = this.board[fromRow][fromCol];
+        this.board[fromRow][fromCol] = EMPTY;
+
         // 2. if this move is a jump, remove the captured piece
+        if (isJump(fromRow, fromCol, toRow, toCol)) {
+            // remove captured piece
+            int removeRow = (fromRow + toRow) / 2;
+            int removeCol = (fromCol + toCol) / 2;
+            this.board[removeRow][removeCol] = EMPTY;
+        }
         // 3. if the piece moves into the kings row on the opponent's side of the board, crowned it as a king
     }
 
@@ -162,8 +170,10 @@ public class CheckersData {
                     if (jumps != null && jumps.length > 0) {
                         jumpExists = true;
                         moves.addAll(Arrays.asList(jumps));
+
                     } else if (!jumpExists) {
                         CheckersMove[] normals = getNormalMovesFrom(player, r, c);
+
                         try {
                             moves.addAll(Arrays.asList(normals));
                         } catch (NullPointerException e) {
@@ -245,13 +255,17 @@ public class CheckersData {
             int newRow = row + dir[0];
             int newCol = col + dir[1];
 
-            if ((pieceAt(newRow, newCol) == opponent) || (pieceAt(newRow, newCol) == EMPTY)) {
+            if (pieceAt(newRow, newCol) == EMPTY) {
                 moves.add(new CheckersMove(row, col, newRow, newCol));
             }
         }
 
         if (moves.size() == 0) return null;
         return moves.toArray(new CheckersMove[moves.size()]);
+    }
+
+    boolean isJump(int fromRow, int fromCol, int toRow, int toCol) {
+        if ()
     }
 
 }

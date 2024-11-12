@@ -17,7 +17,7 @@ import java.util.ArrayList;
  *
  */
 public class CheckersMove {
-    
+
     ArrayList<Integer> rows = new ArrayList<Integer>();
     ArrayList<Integer> cols = new ArrayList<Integer>();
     
@@ -32,6 +32,7 @@ public class CheckersMove {
         // move's destination
         rows.add(r2);
         cols.add(c2);
+        isJump = false;
     }
     
     CheckersMove() {
@@ -64,5 +65,5 @@ public class CheckersMove {
         return move;
         
     }
-    
+
 }  // end class CheckersMove.
