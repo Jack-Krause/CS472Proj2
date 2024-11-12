@@ -38,11 +38,11 @@ public class CheckersMove {
     public String toString() {
         StringBuilder s = new StringBuilder();
         s.append("(");
-        s.append(this.rows.get(0));
+        s.append(8- this.rows.get(0));
         s.append(", ");
         s.append(this.cols.get(0));
         s.append(") -> (");
-        s.append(this.rows.get(1));
+        s.append(8- this.rows.get(1));
         s.append(", ");
         s.append(this.cols.get(1));
         s.append(")");
