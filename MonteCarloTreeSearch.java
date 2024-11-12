@@ -53,6 +53,12 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     // child-sibling tree already implemented in the two classes CSTree and CSNode (which  
     // you may feel free to modify).  If you decide not to use the child-sibling tree, simply 
     // remove these two classes. 
-    // 
+    //
+
+    public CheckersMove monteCarloTreeSearch() {
+
+
+        return null;
+    }
 
 }
