@@ -37,7 +37,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         System.out.println(board);
         System.out.println();
 
-        // TODO 
+        // TODO
+
         
         // Return the move for the current state.
         // Here, we simply return the first legal move for demonstration.
@@ -54,7 +55,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     // you may feel free to modify).  If you decide not to use the child-sibling tree, simply 
     // remove these two classes. 
     //
-
     public CheckersMove monteCarloTreeSearch() {
 
 
@@ -64,11 +64,18 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     /**
      * Step 1 of MCTS: Selection
      * Starting at the root, choose successors until a leaf if reached
-     * (guided by a selection policy)
+     * guided by a selection policy
      * @param node
      * @return
      */
     CheckersMove select(MCNode<CheckersData> node) {
+        MCNode<CheckersData> current = node;
+        while (node.children.size() > 0) {
+            for (MCNode<CheckersData> child : node.children) {
+                // select the best one according to policy
+                //current = child;
+            }
+        }
         return null;
     }
 
@@ -92,7 +99,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         MCNode<CheckersData> current = tree;
         while (current.state.getLegalMoves(1).length > 0) {
             CheckersMove move = select(current);
-            node = followLink(node, move);
         }
 
         return null;
