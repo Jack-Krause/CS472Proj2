@@ -61,20 +61,50 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         return null;
     }
 
-    MCNode<CheckersData> playout(MCNode<CheckersData> tree) {
+    /**
+     * Step 1 of MCTS: Selection
+     * Starting at the root, choose successors until a leaf if reached
+     * (guided by a selection policy)
+     * @param node
+     * @return
+     */
+    CheckersMove select(MCNode<CheckersData> node) {
+        return null;
+    }
+
+    /**
+     * Step 2 of MCTS: Expansion
+     * Grow the search tree by generating a new child of
+     * the selected node
+     */
+    void expansion() {
+
+    }
+
+    /**
+     * Step 3 of MCTS: Simulation
+     * Perform playout from the newly generated child node
+     * choose moves for both players using playout policy
+     * @param tree
+     * @return
+     */
+    MCNode<CheckersData> simulation(MCNode<CheckersData> tree) {
         MCNode<CheckersData> current = tree;
         while (current.state.getLegalMoves(1).length > 0) {
             CheckersMove move = select(current);
-            MCNode<CheckersData> node =
+            node = followLink(node, move);
         }
 
         return null;
     }
 
-    CheckersMove select(MCNode<CheckersData> node) {
-        return null;
-    }
+    /**
+     * Step 4 of MCTS: Back-propogation
+     * Use the result of the simulation to update all search tree nodes,
+     * going up to the root
+     */
+    void backPropogation() {}
 
-    MCNode<CheckersData> s
+
 
 }
