@@ -1,10 +1,11 @@
 package edu.iastate.cs472.proj2;
 
 /**
- * 
- * @author 
- *
+ * @author
  */
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class implements the Monte Carlo tree search method to find the best
@@ -12,7 +13,7 @@ package edu.iastate.cs472.proj2;
  */
 public class MonteCarloTreeSearch extends AdversarialSearch {
 
-	/**
+    /**
      * The input parameter legalMoves contains all the possible moves.
      * It contains four integers:  fromRow, fromCol, toRow, toCol
      * which represents a move from (fromRow, fromCol) to (toRow, toCol).
@@ -28,7 +29,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     public CheckersMove makeMove(CheckersMove[] legalMoves) {
         // The checker board state can be obtained from this.board,
         // which is an 2D array of the following integers defined below:
-    	// 
+        //
         // 0 - empty square,
         // 1 - red man
         // 2 - red king
@@ -39,12 +40,12 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
         // TODO
 
-        
+
         // Return the move for the current state.
         // Here, we simply return the first legal move for demonstration.
         return legalMoves[0];
     }
-    
+
     // TODO
     // 
     // Implement your helper methods here. They include at least the methods for selection,  
@@ -68,15 +69,21 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * @param node
      * @return
      */
-    CheckersMove select(MCNode<CheckersData> node) {
-        MCNode<CheckersData> current = node;
-        while (node.children.size() > 0) {
-            for (MCNode<CheckersData> child : node.children) {
-                // select the best one according to policy
-                //current = child;
+    MCNode<CheckersData> select(MCNode<CheckersData> node) {
+        MCNode<CheckersData> selection = node;
+        double c = Math.sqrt(2);
+        double best = Double.NEGATIVE_INFINITY;
+
+        for (MCNode<CheckersData> child : node.getChildren()) {
+            // select the best one according to policy
+            double childU = child.UCB1(child.getExplorations(), c);
+            if (childU > best) {
+                selection = child;
+                best = childU;
             }
         }
-        return null;
+        
+        return selection;
     }
 
     /**
@@ -84,8 +91,20 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * Grow the search tree by generating a new child of
      * the selected node
      */
-    void expansion() {
+    List<MCNode<CheckersData>> expansion(MCNode<CheckersData> node) {
+        List<MCNode<CheckersData>> generatedChildren = new ArrayList<>();
 
+        CheckersMove[] moves = node.state.getLegalMoves(1);
+        for (CheckersMove move : moves) {
+            CheckersData state = new CheckersData();
+            MCNode<CheckersData> newState = new MCNode<CheckersData>(state, move);
+
+            newState.state.makeMove(move.rows.get(0), move.cols.get(0), move.rows.get(1), move.cols.get(1));
+            node.addChild(newState);
+            generatedChildren.add(newState);
+        }
+
+        return generatedChildren;
     }
 
     /**
@@ -98,7 +117,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     MCNode<CheckersData> simulation(MCNode<CheckersData> tree) {
         MCNode<CheckersData> current = tree;
         while (current.state.getLegalMoves(1).length > 0) {
-            CheckersMove move = select(current);
+            MCNode<CheckersData> state = select(current);
         }
 
         return null;
@@ -109,8 +128,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * Use the result of the simulation to update all search tree nodes,
      * going up to the root
      */
-    void backPropogation() {}
-
+    void backPropogation() {
+    }
 
 
 }

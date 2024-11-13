@@ -34,6 +34,7 @@ public class CheckersData {
         setUpGame();
     }
 
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
