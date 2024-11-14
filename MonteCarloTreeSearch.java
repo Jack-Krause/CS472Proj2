@@ -93,16 +93,17 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      */
     List<MCNode<CheckersData>> expansion(MCNode<CheckersData> node) {
         List<MCNode<CheckersData>> generatedChildren = new ArrayList<>();
-
         CheckersMove[] moves = node.state.getLegalMoves(1);
-        for (CheckersMove move : moves) {
-            CheckersData state = new CheckersData();
-            MCNode<CheckersData> newState = new MCNode<CheckersData>(state, move);
-            newState.setCurrentPlayer(-node.getCurrentPlayer());
 
-            newState.state.makeMove(move.rows.get(0), move.cols.get(0), move.rows.get(1), move.cols.get(1));
-            node.addChild(newState);
-            generatedChildren.add(newState);
+        for (CheckersMove move : moves) {
+            CheckersData newState = node.state.clone();
+            MCNode<CheckersData> childNode = new MCNode<>(newState, move);
+
+            newState.makeMove(move);
+
+            childNode.setCurrentPlayer(-node.getCurrentPlayer());
+            node.addChild(childNode);
+            generatedChildren.add(childNode);
         }
 
         return generatedChildren;
