@@ -13,7 +13,7 @@ public class MCNode<E>
     CheckersData state;
     CheckersMove move;
     int explorations;
-    int wins;
+    double wins;
     List<MCNode<E>> children;
 
     public MCNode(CheckersData state, CheckersMove move) {
@@ -26,12 +26,24 @@ public class MCNode<E>
         this.currentPlayer = 1;
     }
 
+    public void setParent(MCNode<E> parent) {
+        this.parent = parent;
+    }
+
+    public MCNode<E> getParent() {
+        return parent;
+    }
+
+    public void incrementExplorationCount() {
+        this.explorations++;
+    }
+
     public void addChild(MCNode<E> child) {
         child.parent = this;
         children.add(child);
     }
 
-    public void update(int result) {
+    public void update(double result) {
         this.explorations++;
         this.wins += result;
     }
@@ -47,7 +59,7 @@ public class MCNode<E>
         return this.explorations;
     }
 
-    public int getWins() {
+    public double getWins() {
         return this.wins;
     }
 
