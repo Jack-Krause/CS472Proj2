@@ -117,13 +117,37 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * @return
      */
     MCNode<CheckersData> simulation(MCNode<CheckersData> tree) {
-        MCNode<CheckersData> current = tree;
-        while (current.state.getLegalMoves(1).length > 0) {
-            MCNode<CheckersData> state = select(current);
+        CheckersData state = tree.state.clone();
+        int currentPlayer = tree.getCurrentPlayer();
 
+        while (! state.gameOver()) {
+            CheckersMove[] moves = state.getLegalMoves(currentPlayer);
+            if (moves == null || moves.length == 0) break;
+
+            CheckersMove randomMove = moves[(int) (Math.random() * moves.length)];
+            state.makeMove(randomMove);
+            currentPlayer = -currentPlayer;
         }
 
-        return null;
+        double outcome = evaluate(state, tree.getCurrentPlayer());
+        //backPropagation(node, outcome);
+        return tree;
+    }
+
+    double evaluate(CheckersData state, int currentPlayer) {
+        if (! state.gameOver()) {
+            throw new IllegalStateException("Game is not over");
+        }
+
+        CheckersMove[] oppMoves = state.getLegalMoves(-currentPlayer);
+        CheckersMove[] curMoves = state.getLegalMoves(currentPlayer);
+
+        boolean oppDone = oppMoves == null || oppMoves.length == 0;
+        boolean curDone = curMoves == null || curMoves.length == 0;
+
+        if (oppDone && curDone) return 0.5;
+        if (oppDone) return 1;
+        return 0;
     }
 
     /**
@@ -131,7 +155,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * Use the result of the simulation to update all search tree nodes,
      * going up to the root
      */
-    void backPropagation() {
+    void backPropagation(MCNode<CheckersData> node, double outcome) {
+        
     }
 
 

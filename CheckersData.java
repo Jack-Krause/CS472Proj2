@@ -15,7 +15,6 @@ public class CheckersData {
   /*  The following constants represent the possible contents of a square
       on the board.  The constants RED and BLACK also represent players
       in the game. */
-
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_RED = "\u001B[31m";
     public static final String ANSI_YELLOW = "\u001B[33m";
@@ -71,6 +70,10 @@ public class CheckersData {
         sb.append("  1 2 3 4 5 6 7 8");
 
         return sb.toString();
+    }
+
+    public boolean gameOver() {
+        return (this.getLegalMoves(BLACK).length == 0) || (this.getLegalMoves(RED).length == 0);
     }
 
     /**
