@@ -51,7 +51,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
     // TODO
     // 
-    // Implement your helper methods here. They include at least the methods for selection,  
+    // Implement your helper methods here. They include at least the methods for selection,
     // expansion, simulation, and back-propagation. 
     // 
     // For representation of the search tree, you are suggested (but limited) to use a 
@@ -79,8 +79,22 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
             // Step 4: Backpropagation
              backPropagation(simNode, outcome);
+        }
 
+        MCNode<CheckersData> bestChild = null;
+        double bestScore = Double.NEGATIVE_INFINITY;
 
+        for (MCNode<CheckersData> child : root.getChildren()) {
+            double avgScore = child.getAverageScore();
+
+            if (avgScore > bestScore) {
+                bestScore = avgScore;
+                bestChild = child;
+            }
+        }
+
+        if (bestChild != null) {
+            return bestChild.move;
         }
 
         return null;
@@ -141,7 +155,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * @param tree
      * @return
      */
-    MCNode<CheckersData> simulation(MCNode<CheckersData> tree) {
+    double simulation(MCNode<CheckersData> tree) {
         CheckersData state = tree.state.clone();
         int currentPlayer = tree.getCurrentPlayer();
 
@@ -155,9 +169,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         }
 
         double outcome = evaluate(state, tree.getCurrentPlayer());
-
-        backPropagation(tree, outcome);
-        return tree;
+        return outcome;
     }
 
     double evaluate(CheckersData state, int currentPlayer) {

@@ -55,6 +55,10 @@ public class MCNode<E>
         return avgWins + c * Math.sqrt(Math.log(totalExplorations) / this.explorations);
     }
 
+    double getAverageScore() {
+        return (this.explorations == 0) ? 0 : this.wins / this.explorations;
+    }
+
     public int getExplorations() {
         return this.explorations;
     }
