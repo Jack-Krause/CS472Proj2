@@ -73,7 +73,10 @@ public class CheckersData {
     }
 
     public boolean gameOver() {
-        return (this.getLegalMoves(BLACK).length == 0) || (this.getLegalMoves(RED).length == 0);
+        CheckersMove[] blackMoves = this.getLegalMoves(BLACK);
+        CheckersMove[] redMoves = this.getLegalMoves(RED);
+
+        return (blackMoves == null || blackMoves.length == 0) || (redMoves == null || redMoves.length == 0);
     }
 
     /**

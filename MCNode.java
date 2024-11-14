@@ -23,7 +23,7 @@ public class MCNode<E>
         this.wins = 0;
         this.children = new ArrayList<MCNode<E>>();
         this.parent = null;
-        this.currentPlayer = 1;
+        this.currentPlayer = CheckersData.RED;
     }
 
     public void setParent(MCNode<E> parent) {
@@ -75,8 +75,8 @@ public class MCNode<E>
         return this.currentPlayer;
     }
 
-    public void setCurrentPlayer(int currentPlayer) {
-        this.currentPlayer = currentPlayer;
+    public void setCurrentPlayer() {
+        this.currentPlayer = (this.currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
     }
 
 }

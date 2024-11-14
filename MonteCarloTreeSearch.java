@@ -62,9 +62,10 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     public CheckersMove monteCarloTreeSearch() {
         MCNode<CheckersData> root = new MCNode<>(new CheckersData(), null);
         root.state = this.board;
-        root.setCurrentPlayer(1);
+        root.state.board = this.board.board;
+        root.setCurrentPlayer();
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 150; i++) {
             // Step 1: Selection
             MCNode<CheckersData> selectedNode = select(root);
 
@@ -75,7 +76,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             MCNode<CheckersData> simNode = expandedNodes.get((int) (Math.random() * expandedNodes.size()));
 
             // Step 3: Simulation
-             double outcome = simulation(simNode);
+            double outcome = simulation(simNode);
+            System.out.println("Outcome is: " + outcome);
 
             // Step 4: Backpropagation
              backPropagation(simNode, outcome);
@@ -131,12 +133,11 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * the selected node
      */
     List<MCNode<CheckersData>> expansion(MCNode<CheckersData> node) {
-        int currentPlayer = node.getCurrentPlayer() == -1 ? CheckersData.RED : CheckersData.BLACK;
 
         List<MCNode<CheckersData>> generatedChildren = new ArrayList<>();
         //System.out.println("current player" + node.getCurrentPlayer());
 
-        CheckersMove[] moves = node.state.getLegalMoves(currentPlayer);
+        CheckersMove[] moves = node.state.getLegalMoves(node.getCurrentPlayer());
 
         for (CheckersMove move : moves) {
             CheckersData newState = node.state.clone();
@@ -144,7 +145,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
             newState.makeMove(move);
 
-            childNode.setCurrentPlayer(-node.getCurrentPlayer());
+            childNode.setCurrentPlayer();
             childNode.setParent(node);
             node.addChild(childNode);
             generatedChildren.add(childNode);
@@ -162,15 +163,14 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      */
     double simulation(MCNode<CheckersData> tree) {
         CheckersData state = tree.state.clone();
-        int currentPlayer = tree.getCurrentPlayer();
 
         while (! state.gameOver()) {
-            CheckersMove[] moves = state.getLegalMoves(currentPlayer);
+            CheckersMove[] moves = state.getLegalMoves(tree.getCurrentPlayer());
             if (moves == null || moves.length == 0) break;
 
             CheckersMove randomMove = moves[(int) (Math.random() * moves.length)];
             state.makeMove(randomMove);
-            currentPlayer = -currentPlayer;
+            tree.setCurrentPlayer();
         }
 
         double outcome = evaluate(state, tree.getCurrentPlayer());
@@ -178,15 +178,18 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     }
 
     double evaluate(CheckersData state, int currentPlayer) {
-//        if (! state.gameOver()) {
+        if (! state.gameOver()) {
 //            throw new IllegalStateException("Game is not over");
-//        }
+//            return 0;
+            System.out.println("Game not over.");
+        }
 
-        CheckersMove[] oppMoves = state.getLegalMoves(-currentPlayer);
+        CheckersMove[] oppMoves = state.getLegalMoves(currentPlayer == CheckersData.RED ? CheckersData.BLACK : CheckersData.RED);
         CheckersMove[] curMoves = state.getLegalMoves(currentPlayer);
 
         boolean oppDone = oppMoves == null || oppMoves.length == 0;
         boolean curDone = curMoves == null || curMoves.length == 0;
+
 
         if (oppDone && curDone) return 0.5;
         if (oppDone) return 1;
@@ -200,9 +203,9 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      */
     void backPropagation(MCNode<CheckersData> node, double outcome) {
         while (node != null) {
-            System.out.println(outcome + ": " + node.wins);
             node.incrementExplorationCount();
             node.update(outcome);
+            System.out.println(outcome + ": " + node.wins);
             node = node.getParent();
         }
     }
