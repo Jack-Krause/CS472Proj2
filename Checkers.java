@@ -39,46 +39,25 @@ public class Checkers extends JPanel {
 	//To demonstrate previous board
     static boolean chengeValue = false;
 
-    public static void main(String[] args) {
-        CheckersData d = new CheckersData();
 
-        System.out.println(d.toString());
 
-        try {
-            CheckersMove[] possibleMoves = d.getLegalMoves(RED);
-            System.out.println(possibleMoves.length);
+	public static void main(String[] args) {
+		System.out.println("A Checker-Playing Agent Using the Monte Carlo Tree Search");
+		// 1: Use Monte Carlo tree search throughout the game.
+		System.out.println("keys: 1 (MCTS)  2 (Other - not implemented yet)\n");
+        JFrame window = new JFrame("Checkers");
 
-            while (possibleMoves.length > 0) {
-                possibleMoves = d.getLegalMoves(RED);
-                d.makeMove(possibleMoves[0]);
-                System.out.println(possibleMoves[0].toString());
-                System.out.println(d.toString());
+        Checkers content = new Checkers();
+        window.setContentPane(content);
 
-            }
-        } catch (NullPointerException e) {
-            System.out.println("getLegalMoves(RED) returned null");
-        }
-
-    }
-
-//	public static void main(String[] args) {
-//		System.out.println("A Checker-Playing Agent Using the Monte Carlo Tree Search");
-//		// 1: Use Monte Carlo tree search throughout the game.
-//		System.out.println("keys: 1 (MCTS)  2 (Other - not implemented yet)\n");
-//        JFrame window = new JFrame("Checkers");
-//
-//
-//        Checkers content = new Checkers();
-//        window.setContentPane(content);
-//
-//        window.pack();
-//        Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
-//        window.setLocation( (screensize.width - window.getWidth())/2,
-//                (screensize.height - window.getHeight())/2 );
-//        window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-//        window.setResizable(false);
-//        window.setVisible(true);
-//    } // END MAIN
+        window.pack();
+        Dimension screensize = Toolkit.getDefaultToolkit().getScreenSize();
+        window.setLocation( (screensize.width - window.getWidth())/2,
+                (screensize.height - window.getHeight())/2 );
+        window.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+        window.setResizable(false);
+        window.setVisible(true);
+    } // END MAIN
 
 
     private JButton newGameButton;  // Button for starting a new game.
@@ -461,8 +440,10 @@ public class Checkers extends JPanel {
                 
                 repaint();
                 
-                //timeDelay(1);
-                //previous.drawBoard(board);
+                timeDelay(1);
+                //this was ommented out
+//                previous.drawBoard(board, moveAI);
+
                 
             }
             

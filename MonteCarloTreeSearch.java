@@ -35,8 +35,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         // 2 - red king
         // 3 - black man
         // 4 - black king
-        System.out.println(board);
-        System.out.println();
+        //System.out.println(board);
+        //System.out.println();
 
         // TODO
         CheckersMove child = monteCarloTreeSearch();
@@ -64,7 +64,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         root.state = this.board;
         root.setCurrentPlayer(1);
 
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             // Step 1: Selection
             MCNode<CheckersData> selectedNode = select(root);
 
@@ -97,6 +97,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             return bestChild.move;
         }
 
+        System.out.println("Best child is null.");
         return null;
     }
 
@@ -130,8 +131,12 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * the selected node
      */
     List<MCNode<CheckersData>> expansion(MCNode<CheckersData> node) {
+        int currentPlayer = node.getCurrentPlayer() == -1 ? CheckersData.RED : CheckersData.BLACK;
+
         List<MCNode<CheckersData>> generatedChildren = new ArrayList<>();
-        CheckersMove[] moves = node.state.getLegalMoves(node.getCurrentPlayer());
+        //System.out.println("current player" + node.getCurrentPlayer());
+
+        CheckersMove[] moves = node.state.getLegalMoves(currentPlayer);
 
         for (CheckersMove move : moves) {
             CheckersData newState = node.state.clone();
@@ -173,9 +178,9 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     }
 
     double evaluate(CheckersData state, int currentPlayer) {
-        if (! state.gameOver()) {
-            throw new IllegalStateException("Game is not over");
-        }
+//        if (! state.gameOver()) {
+//            throw new IllegalStateException("Game is not over");
+//        }
 
         CheckersMove[] oppMoves = state.getLegalMoves(-currentPlayer);
         CheckersMove[] curMoves = state.getLegalMoves(currentPlayer);
@@ -195,6 +200,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      */
     void backPropagation(MCNode<CheckersData> node, double outcome) {
         while (node != null) {
+            System.out.println(outcome + ": " + node.wins);
             node.incrementExplorationCount();
             node.update(outcome);
             node = node.getParent();
