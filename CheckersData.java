@@ -34,6 +34,15 @@ public class CheckersData {
         setUpGame();
     }
 
+    @Override
+    public CheckersData clone() {
+        CheckersData copy = new CheckersData();
+        for (int i = 0; i < board.length; i++) {
+            System.arraycopy(this.board[i], 0, copy.board[i], 0, board[i].length);
+        }
+        return copy;
+    }
+
 
     @Override
     public String toString() {

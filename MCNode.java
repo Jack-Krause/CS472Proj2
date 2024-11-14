@@ -8,6 +8,7 @@ import java.util.List;
  */
 public class MCNode<E>
 {
+    int currentPlayer;
     MCNode<E> parent;
     CheckersData state;
     CheckersMove move;
@@ -22,6 +23,7 @@ public class MCNode<E>
         this.wins = 0;
         this.children = new ArrayList<MCNode<E>>();
         this.parent = null;
+        this.currentPlayer = 1;
     }
 
     public void addChild(MCNode<E> child) {
@@ -51,6 +53,14 @@ public class MCNode<E>
 
     public List<MCNode<E>> getChildren() {
         return this.children;
+    }
+
+    public int getCurrentPlayer() {
+        return this.currentPlayer;
+    }
+
+    public void setCurrentPlayer(int currentPlayer) {
+        this.currentPlayer = currentPlayer;
     }
 
 }

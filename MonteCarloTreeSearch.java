@@ -82,7 +82,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
                 best = childU;
             }
         }
-        
+
         return selection;
     }
 
@@ -98,6 +98,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         for (CheckersMove move : moves) {
             CheckersData state = new CheckersData();
             MCNode<CheckersData> newState = new MCNode<CheckersData>(state, move);
+            newState.setCurrentPlayer(-node.getCurrentPlayer());
 
             newState.state.makeMove(move.rows.get(0), move.cols.get(0), move.rows.get(1), move.cols.get(1));
             node.addChild(newState);
@@ -118,17 +119,18 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         MCNode<CheckersData> current = tree;
         while (current.state.getLegalMoves(1).length > 0) {
             MCNode<CheckersData> state = select(current);
+
         }
 
         return null;
     }
 
     /**
-     * Step 4 of MCTS: Back-propogation
+     * Step 4 of MCTS: Back-propagation
      * Use the result of the simulation to update all search tree nodes,
      * going up to the root
      */
-    void backPropogation() {
+    void backPropagation() {
     }
 
 
