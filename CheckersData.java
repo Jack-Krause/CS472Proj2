@@ -132,6 +132,17 @@ public class CheckersData {
             makeMove(move.rows.get(i), move.cols.get(i), move.rows.get(i + 1), move.cols.get(i + 1));
     }
 
+    int countPieces(int player) {
+        int pieceCount = 0;
+
+        for (int i = 0; i < 8; i++) {
+            for (int k = 0; k < 8; k++) {
+                if (this.board[i][k] == player) pieceCount++;
+            }
+        }
+
+        return pieceCount;
+    }
 
     /**
      * Make the move from (fromRow,fromCol) to (toRow,toCol).  It is
