@@ -259,9 +259,12 @@ public class CheckersData {
             int jumpRow = row + dir[0] / 2;
             int jumpCol = col + dir[1] / 2;
 
-            if (newRow >= 8 || newCol >= 8 || newRow < 0 || newCol < 0) continue;
+            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8 || pieceAt(newRow, newCol) != EMPTY) {
+                continue;
+            }
 
-            if ((pieceAt(jumpRow, jumpCol) == opponent) || (pieceAt(jumpRow, jumpCol) == opponentKing)) {
+            int jumpedPiece = pieceAt(jumpRow, jumpCol);
+            if (jumpedPiece == opponent || jumpedPiece == opponentKing) {
                 jumps.add(new CheckersMove(row, col, newRow, newCol));
             }
         }

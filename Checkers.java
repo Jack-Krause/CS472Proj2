@@ -306,7 +306,7 @@ public class Checkers extends JPanel {
             agentBoard.setUpGame(); // S_L
             //
             currentPlayer = RED;   // RED moves first.
-            player.setCheckersData(board);
+            player.setCheckersData(board, CheckersData.RED);
             legalMoves = board.getLegalMoves(RED);  // Get RED's legal moves.
             selectedRow = -1;   // RED has not yet selected a piece to move.
             message.setText("Red:  Make your move.");
@@ -430,7 +430,7 @@ public class Checkers extends JPanel {
                     message.setText("BLACK:  Now AI's turn.");
                 }
 
-                player.setCheckersData(board);
+                player.setCheckersData(board, CheckersData.BLACK);
                 moveAI = player.makeMove(legalMoves);
                 
                 board.makeMove(moveAI);

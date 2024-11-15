@@ -17,7 +17,7 @@ public class MCNode<E>
     List<MCNode<E>> children;
     private List<CheckersMove> untriedMoves;
 
-    public MCNode(CheckersData state, CheckersMove move, MCNode<E> parent) {
+    public MCNode(CheckersData state, CheckersMove move, MCNode<E> parent, int aiSide) {
         this.state = state;
         this.move = move;
         this.explorations = 0;
@@ -26,7 +26,7 @@ public class MCNode<E>
         this.parent = parent;
 
         if (parent == null) {
-            this.currentPlayer = CheckersData.BLACK;
+            this.currentPlayer = aiSide;
         } else {
             this.currentPlayer = (parent.currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
         }

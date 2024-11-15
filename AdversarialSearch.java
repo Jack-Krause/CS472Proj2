@@ -11,12 +11,14 @@ package edu.iastate.cs472.proj2;
  */
 public abstract class AdversarialSearch {
     protected CheckersData board;
+    protected int side;
 
     // An instance of this class will be created in the Checkers.Board
     // It would be better to keep the default constructor.
 
-    protected void setCheckersData(CheckersData board) {
+    protected void setCheckersData(CheckersData board, int side) {
         this.board = board;
+        this.side = side;
     }
     
     /** 
