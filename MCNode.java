@@ -15,15 +15,30 @@ public class MCNode<E>
     int explorations;
     double wins;
     List<MCNode<E>> children;
+    private List<CheckersMove> untriedMoves;
 
-    public MCNode(CheckersData state, CheckersMove move) {
+    public MCNode(CheckersData state, CheckersMove move, MCNode<E> parent) {
         this.state = state;
         this.move = move;
         this.explorations = 0;
         this.wins = 0;
         this.children = new ArrayList<MCNode<E>>();
-        this.parent = null;
-        this.currentPlayer = CheckersData.RED;
+        this.parent = parent;
+
+        if (parent == null) {
+            this.currentPlayer = CheckersData.BLACK;
+        } else {
+            this.currentPlayer = (parent.currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
+        }
+
+        this.untriedMoves = new ArrayList<>();
+        CheckersMove[] legalMoves = state.getLegalMoves(this.currentPlayer);
+        if (legalMoves != null) {
+            for (CheckersMove m : legalMoves) {
+                this.untriedMoves.add(m);
+            }
+        }
+
     }
 
     public void setParent(MCNode<E> parent) {
@@ -61,6 +76,22 @@ public class MCNode<E>
 
     public int getExplorations() {
         return this.explorations;
+    }
+
+    public CheckersMove getUntriedMove() {
+        return this.untriedMoves.remove(0);
+    }
+
+   public boolean isLeaf() {
+        return isTerminalNode() || !isExpanded();
+    }
+
+    public boolean isTerminalNode() {
+        return this.state.gameOver();
+    }
+
+    public boolean isExpanded() {
+        return this.untriedMoves.isEmpty();
     }
 
     public double getWins() {

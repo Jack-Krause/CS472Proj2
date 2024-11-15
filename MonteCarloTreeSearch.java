@@ -59,7 +59,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     // remove these two classes. 
     //
     public CheckersMove monteCarloTreeSearch() {
-        MCNode<CheckersData> root = new MCNode<>(new CheckersData(), null);
+        MCNode<CheckersData> root = new MCNode<>(new CheckersData(), null, null);
         root.state = this.board;
         root.state.board = this.board.board;
         root.setCurrentPlayer();
@@ -69,16 +69,11 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             MCNode<CheckersData> selectedNode = select(root);
 
             // Step 2: Expansion
-            List<MCNode<CheckersData>> expandedNodes = expansion(selectedNode);
-            if (expandedNodes.size() == 0) {
-                continue;
-            }
-
-            MCNode<CheckersData> simNode = expandedNodes.get((int) (Math.random() * expandedNodes.size()));
+            MCNode<CheckersData> simNode = expansion(selectedNode);
 
             // Step 3: Simulation
             double outcome = simulation(simNode);
-            System.out.println("Outcome is: " + outcome);
+//            System.out.println("Outcome is: " + outcome);
 
             // Step 4: Backpropagation
             backPropagation(simNode, outcome);
@@ -91,7 +86,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         for (MCNode<CheckersData> child : root.getChildren()) {
 
             double avgScore = child.getAverageScore();
-//            System.out.println("child avg score: " + avgScore);
+            System.out.println("child avg score: " + avgScore);
 
             if (avgScore > bestScore) {
                 bestScore = avgScore;
@@ -102,13 +97,13 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         System.out.println();
 
         if (bestChild != null) {
-//            System.out.println("chosen:" + bestChild.getAverageScore());
+            System.out.println("chosen:" + bestChild.getAverageScore());
             return bestChild.move;
         }
-//        System.out.println();
-//        System.out.println();
+        System.out.println();
+        System.out.println();
 //
-//        System.out.println("Best child is null.");
+        System.out.println("Best child is null.");
         return null;
     }
 
@@ -121,6 +116,15 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * @return
      */
     MCNode<CheckersData> select(MCNode<CheckersData> node) {
+        while (! node.isLeaf()) {
+            System.out.println("N " + node);
+            node = bestChild(node);
+        }
+
+        return node;
+    }
+
+    MCNode<CheckersData> bestChild(MCNode<CheckersData> node) {
         MCNode<CheckersData> selection = node;
         double c = Math.sqrt(2);
         double best = Double.NEGATIVE_INFINITY;
@@ -142,26 +146,17 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * Grow the search tree by generating a new child of
      * the selected node
      */
-    List<MCNode<CheckersData>> expansion(MCNode<CheckersData> node) {
+    MCNode<CheckersData> expansion(MCNode<CheckersData> node) {
+        if (node.isTerminalNode()) return node;
 
-        List<MCNode<CheckersData>> generatedChildren = new ArrayList<>();
-        //System.out.println("current player" + node.getCurrentPlayer());
+        CheckersMove move = node.getUntriedMove();
+        CheckersData newState = node.state.clone();
+        newState.makeMove(move);
 
-        CheckersMove[] moves = node.state.getLegalMoves(node.getCurrentPlayer());
+        MCNode<CheckersData> childNode = new MCNode<>(newState, move, node);
+        node.addChild(childNode);
 
-        for (CheckersMove move : moves) {
-            CheckersData newState = node.state.clone();
-            MCNode<CheckersData> childNode = new MCNode<>(newState, move);
-
-            newState.makeMove(move);
-
-            childNode.setCurrentPlayer();
-            childNode.setParent(node);
-            node.addChild(childNode);
-            generatedChildren.add(childNode);
-        }
-
-        return generatedChildren;
+        return childNode;
     }
 
     /**
@@ -174,18 +169,20 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      */
     double simulation(MCNode<CheckersData> tree) {
         CheckersData state = tree.state.clone();
+        int currentPlayer = tree.getCurrentPlayer();
 
         while (!state.gameOver()) {
-            CheckersMove[] moves = state.getLegalMoves(tree.getCurrentPlayer());
+            CheckersMove[] moves = state.getLegalMoves(currentPlayer);
             if (moves == null || moves.length == 0) break;
 
             CheckersMove randomMove = moves[(int) (Math.random() * moves.length)];
             state.makeMove(randomMove);
-            tree.setCurrentPlayer();
+
+            currentPlayer = (currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
         }
 
 //        double outcome = evaluate(state, tree.getCurrentPlayer());
-        double outcome = evaluate(state, tree.getCurrentPlayer());
+        double outcome = evaluate(state, currentPlayer);
         return outcome;
     }
 
