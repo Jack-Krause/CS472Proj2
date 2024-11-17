@@ -34,6 +34,13 @@ public class CheckersMove {
         cols.add(c2);
     }
 
+    public void combine(CheckersMove nextMove) {
+        for (int i = 1; i < nextMove.rows.size(); i++) {
+            this.rows.add(nextMove.rows.get(i));
+            this.cols.add(nextMove.cols.get(i));
+        }
+    }
+
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder();

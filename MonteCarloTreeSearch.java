@@ -62,7 +62,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     public CheckersMove monteCarloTreeSearch() {
         MCNode<CheckersData> root = new MCNode<>(this.board.clone(), null, null, this.side);
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 1000; i++) {
             // Step 1: Selection
             MCNode<CheckersData> selectedNode = select(root);
 
@@ -70,7 +70,11 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             MCNode<CheckersData> simNode = expansion(selectedNode);
             // Step 3: Simulation
             double outcome = simulation(simNode);
-            System.out.println("- OUT: " + outcome);
+            int counter = 0;
+            if (outcome != 0) {
+                counter ++;
+//                System.out.println(counter + "- OUT: " + outcome);
+            }
 
             // Step 4: Backpropagation
             backPropagation(simNode, outcome);
@@ -91,6 +95,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
 
         if (bestChild != null) {
+            System.out.println("Best choice: " + bestChild.getAverageScore());
             return bestChild.move;
         }
 //
@@ -158,20 +163,35 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * @return
      */
     double simulation(MCNode<CheckersData> tree) {
+        System.out.println("SIMULATION");
         CheckersData state = tree.state.clone();
         int currentPlayer = tree.getCurrentPlayer();
 
-        while (!state.gameOver()) {
+        int depth = 0;
+        int maxDepth = 1000;
+        int noMoveCount = 0;
+
+        while (! state.gameOver() && depth < maxDepth) {
             CheckersMove[] moves = state.getLegalMoves(currentPlayer);
-            if (moves == null || moves.length == 0) break;
 
-            CheckersMove randomMove = moves[(int) (Math.random() * moves.length)];
-            state.makeMove(randomMove);
-
-            currentPlayer = (currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
+            if (moves == null || moves.length == 0) {
+                noMoveCount++;
+                if (noMoveCount == 2) {
+                    break;
+                    // neither of the players have a move. End the game.
+                } else {
+                    // continue the sim with the other player
+                    currentPlayer = (currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
+                    continue;
+                }
+            } else {
+                noMoveCount = 0;
+                CheckersMove randomMove = moves[(int) (Math.random() * moves.length)];
+                state.makeMove(randomMove);
+                currentPlayer = (currentPlayer == CheckersData.RED) ? CheckersData.BLACK : CheckersData.RED;
+            }
         }
 
-//        double outcome = evaluate(state, tree.getCurrentPlayer());
         double outcome = evaluate(state, this.side);
         return outcome;
     }
@@ -199,10 +219,10 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             return 0.5; // Draw: Both players are stuck
         }
         if (curNoMoves || redPieces == 0) {
-            return 0; // Loss: Current player has no moves or no pieces left
+            return 1; // Loss: Current player has no moves or no pieces left
         }
         if (oppNoMoves || blackPieces == 0) {
-            return 1; // Win: Opponent has no moves or no pieces left
+            return 0; // Win: Opponent has no moves or no pieces left
         }
 
         // Default: Non-terminal states should not reach this point

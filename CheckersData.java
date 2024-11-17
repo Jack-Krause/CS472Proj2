@@ -128,8 +128,14 @@ public class CheckersData {
     void makeMove(CheckersMove move) {
         int l = move.rows.size();
 
-        for (int i = 0; i < l - 1; i++)
-            makeMove(move.rows.get(i), move.cols.get(i), move.rows.get(i + 1), move.cols.get(i + 1));
+        for (int i = 0; i < l - 1; i++) {
+            int fromRow = move.rows.get(i);
+            int fromCol = move.cols.get(i);
+            int toRow = move.rows.get(i + 1);
+            int toCol = move.cols.get(i + 1);
+
+            makeMove(fromRow, fromCol, toRow, toCol);
+        }
     }
 
     int countPieces(int player) {
@@ -275,11 +281,38 @@ public class CheckersData {
             int jumpedPiece = pieceAt(jumpRow, jumpCol);
             if (isOpponent(player, jumpedPiece)) {
                 jumps.add(new CheckersMove(row, col, newRow, newCol));
+
+                int[][] boardBackup = copyBoard(this.board);
+                this.board[row][col] = EMPTY;
+                this.board[jumpRow][jumpCol] = EMPTY;
+                this.board[newRow][newCol] = piece;
+
+                CheckersMove[] otherJumps = getJumpsFrom(player, newRow, newCol);
+
+                if (otherJumps!= null && otherJumps.length > 0) {
+                    for (CheckersMove jump : otherJumps) {
+                        CheckersMove move = new CheckersMove(row, col, newRow, newCol);
+                        move.combine(jump);
+                        jumps.add(move);
+                    }
+                } else {
+                    jumps.add(new CheckersMove(row, col, newRow, newCol));
+                }
+
+                this.board = boardBackup;
             }
         }
 
         if (jumps.size() == 0) return null;
         return jumps.toArray(new CheckersMove[jumps.size()]);
+    }
+
+    private int[][] copyBoard(int[][] board) {
+        int[][] copy = new int[8][8];
+        for (int i = 0; i < 8; i++) {
+            System.arraycopy(board[i], 0, copy[i], 0, 8);
+        }
+        return copy;
     }
 
     CheckersMove[] getNormalMovesFrom(int player, int row, int col) {
