@@ -162,7 +162,8 @@ public class CheckersData {
         //
         // Update the board for the given move. You need to take care of the following situations:
         // 1. move the piece from (fromRow,fromCol) to (toRow,toCol)
-        this.board[toRow][toCol] = this.board[fromRow][fromCol];
+        int piece = this.board[fromRow][fromCol];
+        this.board[toRow][toCol] = piece;
         this.board[fromRow][fromCol] = EMPTY;
 
         // 2. if this move is a jump, remove the captured piece
@@ -172,11 +173,11 @@ public class CheckersData {
             int removeCol = (fromCol + toCol) / 2;
             this.board[removeRow][removeCol] = EMPTY;
         }
-        // 3. if the piece moves into the kings row on the opponent's side of the board, crowned it as a king
 
-        if (toRow == 0 && this.board[toRow][toCol] == RED) {
+        // 3. if the piece moves into the kings row on the opponent's side of the board, crowned it as a king
+        if (toRow == 0 && piece == RED) {
             this.board[toRow][toCol] = RED_KING;
-        } else if (toRow == 7 && this.board[toRow][toCol] == BLACK) {
+        } else if (toRow == 7 && piece == BLACK) {
             this.board[toRow][toCol] = BLACK_KING;
         }
     }
@@ -198,22 +199,31 @@ public class CheckersData {
 
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
+                int piece = this.board[r][c];
 
-                if (isPlayerPiece(player, this.board[r][c])) {
+                if (isPlayerPiece(player, piece)) {
                     CheckersMove[] jumps = getJumpsFrom(player, r, c);
 
-                    if (jumps != null && jumps.length > 0) {
-                        jumpExists = true;
+                    if (jumps != null) {
                         moves.addAll(Arrays.asList(jumps));
+                    }
+                }
+            }
+        }
 
-                    } else if (!jumpExists) {
-                        CheckersMove[] normals = getNormalMovesFrom(player, r, c);
+        if (!moves.isEmpty()) {
+            return moves.toArray(new CheckersMove[moves.size()]);
+        }
 
-                        try {
-                            moves.addAll(Arrays.asList(normals));
-                        } catch (NullPointerException e) {
-                            //System.out.println("no moves to add. continue");
-                        }
+        for (int r = 0; r < 8; r++) {
+            for (int c = 0; c < 8; c++) {
+                int piece = this.board[r][c];
+
+                if (isPlayerPiece(player, piece)) {
+                    CheckersMove[] normals = getNormalMovesFrom(player, r, c);
+
+                    if (normals != null) {
+                        moves.addAll(Arrays.asList(normals));
                     }
                 }
             }
