@@ -59,7 +59,7 @@ public class MCNode<E>
     }
 
     public void update(double result) {
-        this.explorations++;
+//        this.explorations++;
         this.wins += result;
     }
 

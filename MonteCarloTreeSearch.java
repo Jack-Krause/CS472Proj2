@@ -62,7 +62,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
     public CheckersMove monteCarloTreeSearch() {
         MCNode<CheckersData> root = new MCNode<>(this.board.clone(), null, null, this.side);
 
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 200; i++) {
             // Step 1: Selection
             MCNode<CheckersData> selectedNode = select(root);
 
@@ -70,6 +70,7 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             MCNode<CheckersData> simNode = expansion(selectedNode);
             // Step 3: Simulation
             double outcome = simulation(simNode);
+            System.out.println("- OUT: " + outcome);
 
             // Step 4: Backpropagation
             backPropagation(simNode, outcome);
@@ -143,7 +144,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         newState.makeMove(move);
 
         MCNode<CheckersData> childNode = new MCNode<>(newState, move, node, this.side);
-        System.out.println(childNode.getCurrentPlayer());
         node.addChild(childNode);
 
         return childNode;

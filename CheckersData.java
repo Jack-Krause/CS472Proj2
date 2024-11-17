@@ -137,7 +137,8 @@ public class CheckersData {
 
         for (int i = 0; i < 8; i++) {
             for (int k = 0; k < 8; k++) {
-                if (this.board[i][k] == player) pieceCount++;
+                int piece = pieceAt(i, k);
+                if (isPlayerPiece(player, piece)) pieceCount++;
             }
         }
 
@@ -198,7 +199,7 @@ public class CheckersData {
         for (int r = 0; r < 8; r++) {
             for (int c = 0; c < 8; c++) {
 
-                if (this.board[r][c] == player) {
+                if (isPlayerPiece(player, this.board[r][c])) {
                     CheckersMove[] jumps = getJumpsFrom(player, r, c);
 
                     if (jumps != null && jumps.length > 0) {
@@ -238,14 +239,13 @@ public class CheckersData {
      * @param col    col index of the start square.
      */
     CheckersMove[] getJumpsFrom(int player, int row, int col) {
-        if (player == EMPTY || pieceAt(row, col) != player) return null;
+        int piece = pieceAt(row, col);
+        if (piece == EMPTY || !isPlayerPiece(player, piece)) return null;
 
         ArrayList<CheckersMove> jumps = new ArrayList<>();
-        int opponent = (player == RED) ? BLACK : RED;
-        int opponentKing = (player == RED) ? BLACK_KING : RED_KING;
         int[][] directions;
 
-        if (player == BLACK_KING || player == RED_KING) {
+        if (isKing(piece)) {
             directions = new int[][]{{-2, -2}, {-2, 2}, {2, -2}, {2, 2}};
         } else if (player == RED) {
             directions = new int[][]{{-2, -2}, {-2, 2}};
@@ -259,12 +259,11 @@ public class CheckersData {
             int jumpRow = row + dir[0] / 2;
             int jumpCol = col + dir[1] / 2;
 
-            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8 || pieceAt(newRow, newCol) != EMPTY) {
-                continue;
-            }
+            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) continue;
+            if (pieceAt(newRow, newCol) != EMPTY) continue;
 
             int jumpedPiece = pieceAt(jumpRow, jumpCol);
-            if (jumpedPiece == opponent || jumpedPiece == opponentKing) {
+            if (isOpponent(player, jumpedPiece)) {
                 jumps.add(new CheckersMove(row, col, newRow, newCol));
             }
         }
@@ -274,14 +273,13 @@ public class CheckersData {
     }
 
     CheckersMove[] getNormalMovesFrom(int player, int row, int col) {
-        if (player == EMPTY || pieceAt(row, col) != player) return null;
+        int piece = pieceAt(row, col);
+        if (piece == EMPTY || !isPlayerPiece(player, piece));
 
         ArrayList<CheckersMove> moves = new ArrayList<CheckersMove>();
-        int opponent = (player == RED) ? BLACK : RED;
-        int opponentKing = (player == RED) ? BLACK_KING : RED_KING;
         int[][] directions;
 
-        if (player == BLACK_KING || player == RED_KING) {
+        if (isKing(piece)) {
             directions = new int[][] { {-1, -1}, {-1, 1}, {1, -1}, {1, 1} };
         } else if (player == RED) {
             directions = new int[][] { {-1, -1}, {-1, 1} };
@@ -293,9 +291,10 @@ public class CheckersData {
             int newRow = row + dir[0];
             int newCol = col + dir[1];
 
-            if (pieceAt(newRow, newCol) == EMPTY) {
-                moves.add(new CheckersMove(row, col, newRow, newCol));
-            }
+            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) continue;
+            if (pieceAt(newRow, newCol) != EMPTY) continue;
+
+            moves.add(new CheckersMove(row, col, newRow, newCol));
         }
 
         if (moves.size() == 0) return null;
@@ -304,6 +303,22 @@ public class CheckersData {
 
     boolean isJump(int fromRow, int fromCol, int toRow, int toCol) {
         return Math.abs(fromRow - toRow) == 2 && Math.abs(fromCol - toCol) == 2;
+    }
+
+    boolean isPlayerPiece(int player, int piece) {
+        if (player == RED || player == RED_KING) return piece == RED || piece == RED_KING;
+        else if (player == BLACK || player == BLACK_KING) return piece == BLACK || piece == BLACK_KING;
+        else return false;
+    }
+
+    boolean isKing(int piece) {
+        return piece == RED_KING || piece == BLACK_KING;
+    }
+
+    boolean isOpponent(int player, int piece) {
+        if (player == RED || player == RED_KING) return piece == BLACK || piece == BLACK_KING;
+        else if (player == BLACK || player == BLACK_KING) return piece == RED || piece == RED_KING;
+        else return false;
     }
 
 }
