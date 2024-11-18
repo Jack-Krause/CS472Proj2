@@ -95,7 +95,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
 
         if (bestChild != null) {
-            System.out.println("Best choice: " + bestChild.getAverageScore());
+            //Best choice:
+            System.out.println(bestChild.getAverageScore());
             return bestChild.move;
         }
 //
@@ -163,7 +164,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
      * @return
      */
     double simulation(MCNode<CheckersData> tree) {
-        System.out.println("SIMULATION");
         CheckersData state = tree.state.clone();
         int currentPlayer = tree.getCurrentPlayer();
 
