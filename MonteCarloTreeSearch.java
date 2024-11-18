@@ -36,8 +36,8 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
         // 2 - red king
         // 3 - black man
         // 4 - black king
-        //System.out.println(board);
-        //System.out.println();
+        System.out.println(board);
+        System.out.println();
 
         // TODO
         CheckersMove child = monteCarloTreeSearch();
@@ -73,7 +73,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
             int counter = 0;
             if (outcome != 0) {
                 counter ++;
-//                System.out.println(counter + "- OUT: " + outcome);
             }
 
             // Step 4: Backpropagation
@@ -96,7 +95,6 @@ public class MonteCarloTreeSearch extends AdversarialSearch {
 
         if (bestChild != null) {
             //Best choice:
-            System.out.println(bestChild.getAverageScore());
             return bestChild.move;
         }
 //
