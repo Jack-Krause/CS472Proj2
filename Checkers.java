@@ -15,6 +15,10 @@ import java.util.Random;
 import static edu.iastate.cs472.proj2.CheckersData.RED;
 
 /**
+ * @author Jack Krause
+ */
+
+/**
  * This panel lets two users play checkers against each other.
  * Red always starts the game.  If a player can jump an opponent's
  * piece, then the player must jump.  When a player can make no more

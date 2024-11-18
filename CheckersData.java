@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
+ * @ Author Jack Krause
+ */
+
+/**
  * An object of this class holds data about a game of checkers.
  * It knows what kind of piece is on each square of the checkerboard.
  * Note that RED moves "up" the board (i.e. row number decreases)

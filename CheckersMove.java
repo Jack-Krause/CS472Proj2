@@ -3,6 +3,10 @@ package edu.iastate.cs472.proj2;
 import java.util.ArrayList;
 
 /**
+ * @author Jack Krause
+ */
+
+/**
  * A CheckersMove object represents a move in the game of Checkers.
  * It holds the row and column of the piece that is to be moved
  * and the row and column of the square to which it is to be moved.

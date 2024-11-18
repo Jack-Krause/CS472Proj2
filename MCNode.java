@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * @author Jack Krause
+ */
+
+/**
  * Node type for the Monte Carlo search tree.
  */
 public class MCNode<E>
